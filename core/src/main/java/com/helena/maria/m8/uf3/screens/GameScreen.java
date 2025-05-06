@@ -6,9 +6,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.helena.maria.m8.uf3.CashRun;
+import com.helena.maria.m8.uf3.helpers.AssetManager;
 import com.helena.maria.m8.uf3.map.ChessBoardMap;
 
 public class GameScreen implements Screen {
@@ -21,9 +23,10 @@ public class GameScreen implements Screen {
     public void show() {
         batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport(), batch);
-
+        AssetManager.load();
         lightTile = ChessBoardMap.generateTile(Color.LIGHT_GRAY);
         darkTile = ChessBoardMap.generateTile(Color.DARK_GRAY);
+
     }
 
     @Override
@@ -55,6 +58,7 @@ public class GameScreen implements Screen {
                 batch.draw(tile, col * tileSize, row * tileSize, tileSize, tileSize);
             }
         }
+
 
         batch.end();
 

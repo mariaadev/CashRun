@@ -5,7 +5,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.model.Animation;
+import com.badlogic.gdx.graphics.g2d.Animation;
 
 public class AssetManager {
 
@@ -14,8 +14,10 @@ public class AssetManager {
     public static Texture sheetPoliceLeft;
     public static Texture sheetPoliceRight;
 
-    public static TextureRegion[] thief;
-    public static TextureRegion[] police;
+    public static TextureRegion[] thiefLeft;
+    public static TextureRegion[] thiefRight;
+    public static TextureRegion[] policeLeft;
+    public static TextureRegion[] policeRight;
 
     public static Animation thiefAnimationLeft;
     public static Animation thiefAnimationRight;
@@ -50,10 +52,44 @@ public class AssetManager {
         sheetMoney = new Texture(Gdx.files.internal("images/money.png"));
         sheetMoney.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
+        coins = new TextureRegion(sheetMoney, 0, 0, 100, 100);
+        gold = new TextureRegion(sheetMoney, 100, 0, 100, 100);
+        moneyBack = new TextureRegion(sheetMoney, 200, 0, 100, 100);
+
         /* Aqui separem els sprites i fem les animacions */
+        thiefLeft = new TextureRegion[3];
+        for (int i = 0; i < 3; i++) {
+            thiefLeft[i] = new TextureRegion(sheetThiefLeft, i * 100, 0, 100, 100);
+        }
+
+        thiefAnimationLeft = new Animation<TextureRegion>(0.1f, thiefLeft);
+        thiefAnimationLeft.setPlayMode(Animation.PlayMode.LOOP_REVERSED);
+
+        thiefRight = new TextureRegion[3];
+        for (int i = 0; i < 3; i++) {
+            thiefRight[i] = new TextureRegion(sheetThiefRight, i * 100, 0, 100, 100);
+        }
+
+        thiefAnimationRight = new Animation<TextureRegion>(0.1f, thiefRight);
+        thiefAnimationRight.setPlayMode(Animation.PlayMode.LOOP_REVERSED);
+
+        policeLeft = new TextureRegion[3];
+        for (int i = 0; i < 3; i++) {
+            policeLeft[i] = new TextureRegion(sheetPoliceLeft, i * 100, 0, 100, 100);
+        }
+
+        policeAnimationLeft = new Animation<TextureRegion>(0.1f, policeLeft);
+        policeAnimationLeft.setPlayMode(Animation.PlayMode.LOOP_REVERSED);
+
+        policeRight = new TextureRegion[3];
+        for (int i = 0; i < 3; i++) {
+            policeRight[i] = new TextureRegion(sheetPoliceRight, i * 100, 0, 100, 100);
+        }
+
+        policeAnimationRight = new Animation<TextureRegion>(0.1f, policeRight);
+        policeAnimationRight.setPlayMode(Animation.PlayMode.LOOP_REVERSED);
 
         pickMoney = Gdx.audio.newSound(Gdx.files.internal("sounds/moneypick.mp3"));
-
         gameOver = Gdx.audio.newMusic(Gdx.files.internal("sounds/gameover.mp3"));
         music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
         winner = Gdx.audio.newMusic(Gdx.files.internal("sounds/winner.mp3"));
