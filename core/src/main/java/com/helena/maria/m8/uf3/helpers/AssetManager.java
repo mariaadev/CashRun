@@ -30,6 +30,9 @@ public class AssetManager {
     public static TextureRegion moneyBack;
     public static TextureRegion gold;
 
+    public static Texture thiefTexture;
+    public static TextureRegion thief;
+
     public static Sound pickMoney;
     public static Music gameOver;
     public static Music music;
@@ -55,6 +58,10 @@ public class AssetManager {
         coins = new TextureRegion(sheetMoney, 0, 0, 100, 100);
         gold = new TextureRegion(sheetMoney, 100, 0, 100, 100);
         moneyBack = new TextureRegion(sheetMoney, 200, 0, 100, 100);
+
+        thiefTexture = new Texture(Gdx.files.internal("images/thief/pjstanding.png"));
+        thiefTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        thief = new TextureRegion(thiefTexture);
 
         /* Aqui separem els sprites i fem les animacions */
         thiefLeft = new TextureRegion[3];
@@ -112,5 +119,6 @@ public class AssetManager {
         gameOver.dispose();
         music.dispose();
         winner.dispose();
+        thiefTexture.dispose();
     }
 }
