@@ -9,14 +9,17 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.helena.maria.m8.uf3.CashRun;
+import com.helena.maria.m8.uf3.actors.Police;
 import com.helena.maria.m8.uf3.actors.Thief;
 import com.helena.maria.m8.uf3.helpers.AssetManager;
 import com.helena.maria.m8.uf3.map.ChessBoardMap;
 import com.helena.maria.m8.uf3.utils.Settings;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class GameScreen implements Screen {
     private SpriteBatch batch;
@@ -44,6 +47,23 @@ public class GameScreen implements Screen {
 
         thief = new Thief(Settings.THIEF_STARTX, Settings.THIEF_STARTY,
             Settings.THIEF_WIDTH, Settings.THIEF_HEIGHT);
+
+        Vector2[][] patrolPoints = {
+            {new Vector2(0, 10), new Vector2(200, 10)},
+            {new Vector2(220, 50), new Vector2(20, 50)},
+            {new Vector2(100, 0), new Vector2(100, 120)},
+            {new Vector2(150, 30), new Vector2(150, 90)},
+            {new Vector2(50, 20), new Vector2(200, 20)},
+            {new Vector2(0, 100), new Vector2(240, 100)},
+            {new Vector2(30, 60), new Vector2(180, 60)}
+        };
+
+        for (int i = 0; i < patrolPoints.length; i++) {
+            Vector2 start = patrolPoints[i][0];
+            Vector2 end = patrolPoints[i][1];
+            Police police = new Police(start, end, 100, 100);
+            stage.addActor(police);
+        }
 
         stage.addActor(thief);
 
@@ -76,13 +96,11 @@ public class GameScreen implements Screen {
         float tileSizeY = screenHeight / rows;
 
         float tileSize = Math.min(tileSizeX, tileSizeY);
-
         float scaleFactor = 1.05f;
-
         tileSize *= scaleFactor;
 
+        // Dibuja fondo de tablero
         batch.begin();
-
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 boolean isLight = (row + col) % 2 == 0;
@@ -90,10 +108,24 @@ public class GameScreen implements Screen {
                 batch.draw(tile, col * tileSize, row * tileSize, tileSize, tileSize);
             }
         }
+        batch.end(); // <- FIN antes de que stage lo use
 
+        // Lógica de movimiento y colisión
+        if (!gameOver) {
+            for (Actor actor : stage.getActors()) {
+                if (actor instanceof Police) {
+                    Police police = (Police) actor;
+                    if (police.collides(thief)) {
+                        AssetManager.gameOver.play();
+                        thief.remove();
+                        gameOver = true;
+                        break;
+                    }
+                }
+            }
+        }
 
-        batch.end();
-
+        // Dibuja actores
         stage.act(delta);
         stage.draw();
     }
@@ -113,5 +145,16 @@ public class GameScreen implements Screen {
         stage.dispose();
         lightTile.dispose();
         darkTile.dispose();
+    }
+
+    public Thief getThief(){ return thief; }
+    public Stage getStage() { return stage; }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void restartGame() {
+        game.setScreen(new GameScreen(game));  // Cambia la pantalla a ReadyScreen
     }
 }
