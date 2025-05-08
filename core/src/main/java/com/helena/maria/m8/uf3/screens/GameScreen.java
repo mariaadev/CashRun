@@ -1,31 +1,63 @@
 package com.helena.maria.m8.uf3.screens;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.helena.maria.m8.uf3.CashRun;
+import com.helena.maria.m8.uf3.actors.Thief;
 import com.helena.maria.m8.uf3.helpers.AssetManager;
 import com.helena.maria.m8.uf3.map.ChessBoardMap;
+import com.helena.maria.m8.uf3.utils.Settings;
 
 public class GameScreen implements Screen {
     private SpriteBatch batch;
     private Stage stage;
 
+    Boolean gameOver = false;
+    private Thief thief;
+
+    Game game;
+
     private Texture lightTile, darkTile;
+
+    public GameScreen(Game game){
+        AssetManager.music.play();
+
+        this.game = game;
+
+        OrthographicCamera camera = new OrthographicCamera(Settings.GAME_WIDTH, Settings.GAME_HEIGHT);
+        camera.setToOrtho(true);
+
+        StretchViewport viewport = new StretchViewport(Settings.GAME_WIDTH, Settings.GAME_HEIGHT, camera);
+
+        batch = new SpriteBatch();
+        stage = new Stage(new ScreenViewport(), batch);
+
+        thief = new Thief(Settings.THIEF_STARTX, Settings.THIEF_STARTY,
+            Settings.THIEF_WIDTH, Settings.THIEF_HEIGHT);
+
+        stage.addActor(thief);
+
+        thief.setName("thief");
+
+
+        lightTile = ChessBoardMap.generateTile(Color.LIGHT_GRAY);
+        darkTile = ChessBoardMap.generateTile(Color.DARK_GRAY);
+
+    }
 
     @Override
     public void show() {
-        batch = new SpriteBatch();
-        stage = new Stage(new ScreenViewport(), batch);
-        AssetManager.load();
-        lightTile = ChessBoardMap.generateTile(Color.LIGHT_GRAY);
-        darkTile = ChessBoardMap.generateTile(Color.DARK_GRAY);
+
 
     }
 
