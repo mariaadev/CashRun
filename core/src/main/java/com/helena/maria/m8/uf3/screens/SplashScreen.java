@@ -52,12 +52,12 @@ public class SplashScreen implements Screen {
         font = generator.generateFont(parameter);
         generator.dispose();
 
-        gameScreen = new GameScreen();
+        gameScreen = new GameScreen(game);
 
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                game.setScreen(new GameScreen());
+                game.setScreen(new GameScreen(game));
                 return true;
             }
         });

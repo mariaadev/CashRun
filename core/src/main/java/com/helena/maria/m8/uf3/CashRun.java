@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.helena.maria.m8.uf3.helpers.AssetManager;
 import com.helena.maria.m8.uf3.screens.GameScreen;
+import com.helena.maria.m8.uf3.screens.SplashScreen;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class CashRun extends Game {
@@ -16,7 +17,7 @@ public class CashRun extends Game {
     @Override
     public void create() {
         AssetManager.load();
-        setScreen(new GameScreen(this));
+        setScreen(new SplashScreen(this));
     }
 
     @Override
