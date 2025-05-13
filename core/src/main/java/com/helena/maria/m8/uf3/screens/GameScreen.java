@@ -169,7 +169,6 @@ public class GameScreen implements Screen {
 
         if (gameWon) {
             batch.begin();
-            // Puedes usar BitmapFont aquí
             // font.draw(batch, "¡Victoria!", 100, 100);
             batch.end();
         }
