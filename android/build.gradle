@@ -10,7 +10,7 @@ apply plugin: 'com.android.application'
 
 android {
   namespace "com.helena.maria.m8.uf3"
-  compileSdk 34
+  compileSdk 35
   sourceSets {
     main {
       manifest.srcFile 'AndroidManifest.xml'

@@ -39,7 +39,7 @@ public class Police extends Actor {
         this.collisionRect = new Rectangle();
         setBounds(position.x, position.y, width, height);
 
-        velocity = new Vector2(end).sub(start).nor().scl(1.5f); // Ajusta velocidad aquí
+        velocity = new Vector2(end).sub(start).nor().scl(1.5f);
         direction = velocity.x > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT;
 
         animationLeft = AssetManager.policeAnimationLeft;
