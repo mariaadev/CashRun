@@ -33,6 +33,7 @@ public class SplashScreen implements Screen {
     private final float titleSize = 2.5f;
 
     public SplashScreen(final CashRun game) {
+        AssetManager.music.play();
         this.game = game;
         this.batch = new SpriteBatch();
         this.camera = new OrthographicCamera();
@@ -52,11 +53,12 @@ public class SplashScreen implements Screen {
         font = generator.generateFont(parameter);
         generator.dispose();
 
-        gameScreen = new GameScreen();
+        gameScreen = new GameScreen(game);
+
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                game.setScreen(new GameScreen());
+                game.setScreen(new GameScreen(game));
                 return true;
             }
         });

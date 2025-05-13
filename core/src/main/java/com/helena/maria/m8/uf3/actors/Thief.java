@@ -86,4 +86,9 @@ public class Thief extends Actor {
 
 
     }
+
+    public Rectangle getBounds() {
+        return new Rectangle(getX(), getY(), getWidth(), getHeight());
+    }
+
 }

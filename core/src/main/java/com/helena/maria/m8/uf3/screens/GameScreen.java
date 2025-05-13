@@ -11,9 +11,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.helena.maria.m8.uf3.CashRun;
+import com.helena.maria.m8.uf3.actors.Money;
 import com.helena.maria.m8.uf3.actors.Police;
 import com.helena.maria.m8.uf3.actors.Thief;
 import com.helena.maria.m8.uf3.helpers.AssetManager;
@@ -29,6 +31,12 @@ public class GameScreen implements Screen {
     private Thief thief;
 
     Game game;
+
+    private Array<Money> moneyList;
+    private boolean gameWon = false;
+    private boolean reachedEnd = false;
+    private int moneyCollected = 0;
+
 
     private Texture lightTile, darkTile;
 
@@ -68,6 +76,21 @@ public class GameScreen implements Screen {
         stage.addActor(thief);
 
         thief.setName("thief");
+
+
+        moneyList = new Array<>();
+
+        // Posiciones de dinero, ajusta según el mapa
+        Vector2[] moneyPositions = {
+            new Vector2(50, 50), new Vector2(150, 70), new Vector2(200, 100),
+            new Vector2(100, 30), new Vector2(220, 10), new Vector2(20, 90), new Vector2(180, 60)
+        };
+
+        for (Vector2 pos : moneyPositions) {
+            Money money = new Money(pos.x, pos.y, 40, 40);
+            moneyList.add(money);
+            stage.addActor(money);
+        }
 
 
         lightTile = ChessBoardMap.generateTile(Color.LIGHT_GRAY);
@@ -125,9 +148,32 @@ public class GameScreen implements Screen {
             }
         }
 
+        if (!gameOver && !gameWon) {
+            for (Money money : moneyList) {
+                if (money.collides(thief)) {
+                    money.collect();
+                    moneyCollected++;
+                }
+            }
+
+            // Comprobamos si el ladrón ha llegado al final del mapa
+            if (moneyCollected > 0 && thief.getX() >= Settings.GAME_WIDTH - thief.getWidth()) {
+                AssetManager.winner.play();
+                gameWon = true;
+            }
+        }
+
         // Dibuja actores
         stage.act(delta);
         stage.draw();
+
+        if (gameWon) {
+            batch.begin();
+            // Puedes usar BitmapFont aquí
+            // font.draw(batch, "¡Victoria!", 100, 100);
+            batch.end();
+        }
+
     }
 
 
