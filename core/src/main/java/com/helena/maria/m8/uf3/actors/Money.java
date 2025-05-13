@@ -16,9 +16,6 @@ public class Money extends Actor {
 
     public Money(float x, float y, float width, float height, MoneyType type) {
         this.type = type;
-        setBounds(x, y, width, height);
-        bounds = new Rectangle(x, y, width, height);
-        setName("money");
 
         switch (type) {
             case COIN:
@@ -28,12 +25,18 @@ public class Money extends Actor {
             case MONEYBAG:
                 texture = AssetManager.moneyBack;
                 value = 100;
+                /*ajustar mida perquè l'imatge és més petita*/
+                width *= 1.4f;
+                height *= 1.4f;
                 break;
             case GOLD:
                 texture = AssetManager.gold;
                 value = 5000;
                 break;
         }
+        setBounds(x, y, width, height);
+        bounds = new Rectangle(x, y, width, height);
+        setName("money");
     }
 
     @Override
