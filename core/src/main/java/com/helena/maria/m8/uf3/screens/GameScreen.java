@@ -19,6 +19,7 @@ import com.helena.maria.m8.uf3.actors.Money;
 import com.helena.maria.m8.uf3.actors.Police;
 import com.helena.maria.m8.uf3.actors.Thief;
 import com.helena.maria.m8.uf3.helpers.AssetManager;
+import com.helena.maria.m8.uf3.helpers.InputHandler;
 import com.helena.maria.m8.uf3.map.ChessBoardMap;
 import com.helena.maria.m8.uf3.utils.Settings;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -26,6 +27,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 public class GameScreen implements Screen {
     private SpriteBatch batch;
     private Stage stage;
+
+    private OrthographicCamera camera;
+    private StretchViewport    viewport;
 
     Boolean gameOver = false;
     private Thief thief;
@@ -44,14 +48,11 @@ public class GameScreen implements Screen {
         AssetManager.music.play();
 
         this.game = game;
-
-        OrthographicCamera camera = new OrthographicCamera(Settings.GAME_WIDTH, Settings.GAME_HEIGHT);
-        camera.setToOrtho(true);
-
-        StretchViewport viewport = new StretchViewport(Settings.GAME_WIDTH, Settings.GAME_HEIGHT, camera);
-
+        camera = new OrthographicCamera(Settings.GAME_WIDTH, Settings.GAME_HEIGHT);
+        camera.setToOrtho(false);
+        viewport = new StretchViewport(Settings.GAME_WIDTH, Settings.GAME_HEIGHT, camera);
         batch = new SpriteBatch();
-        stage = new Stage(new ScreenViewport(), batch);
+        stage = new Stage(viewport, batch);
 
         thief = new Thief(Settings.THIEF_STARTX, Settings.THIEF_STARTY,
             Settings.THIEF_WIDTH, Settings.THIEF_HEIGHT);
@@ -92,6 +93,8 @@ public class GameScreen implements Screen {
             stage.addActor(money);
         }
 
+        Gdx.input.setInputProcessor(new InputHandler(this));
+
 
         lightTile = ChessBoardMap.generateTile(Color.LIGHT_GRAY);
         darkTile = ChessBoardMap.generateTile(Color.DARK_GRAY);
@@ -109,11 +112,14 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        viewport.apply();
+        batch.setProjectionMatrix(camera.combined);
+
         float cols = 22f;
         float rows = 10f;
 
-        float screenWidth = Gdx.graphics.getWidth();
-        float screenHeight = Gdx.graphics.getHeight();
+        float screenWidth = viewport.getWorldWidth();
+        float screenHeight = viewport.getWorldHeight();
 
         float tileSizeX = screenWidth / cols;
         float tileSizeY = screenHeight / rows;
@@ -164,6 +170,8 @@ public class GameScreen implements Screen {
         }
 
         // Dibuja actores
+        viewport.apply();
+        batch.setProjectionMatrix(camera.combined);
         stage.act(delta);
         stage.draw();
 
@@ -179,7 +187,9 @@ public class GameScreen implements Screen {
 
 
 
-    @Override public void resize(int width, int height) {}
+    @Override public void resize(int width, int height) {
+        viewport.update(width, height, true);
+    }
     @Override public void pause() {}
     @Override public void resume() {}
     @Override public void hide() {}

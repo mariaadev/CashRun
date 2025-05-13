@@ -2,7 +2,7 @@ package com.helena.maria.m8.uf3.utils;
 
 public class Settings {
     public static final int GAME_WIDTH = 240;
-    public static final int GAME_HEIGHT = 135;
+    public static final int GAME_HEIGHT =105;
 
     public static final int THIEF_WIDTH = 250;
     public static final int THIEF_HEIGHT = 259;
