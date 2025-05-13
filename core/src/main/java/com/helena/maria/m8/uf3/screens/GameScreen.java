@@ -82,12 +82,14 @@ public class GameScreen implements Screen {
 
         // Posiciones de dinero, ajusta según el mapa
         Vector2[] moneyPositions = {
-            new Vector2(50, 50), new Vector2(150, 70), new Vector2(200, 100),
-            new Vector2(100, 30), new Vector2(220, 10), new Vector2(20, 90), new Vector2(180, 60)
+            new Vector2(300, 70),
+            new Vector2(990, 70),
+            new Vector2(990, 630),
+
         };
 
         for (Vector2 pos : moneyPositions) {
-            Money money = new Money(pos.x, pos.y, 40, 40);
+            Money money = new Money(pos.x, pos.y, 180, 180);
             moneyList.add(money);
             stage.addActor(money);
         }
