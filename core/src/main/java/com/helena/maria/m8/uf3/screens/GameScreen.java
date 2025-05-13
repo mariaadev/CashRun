@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.helena.maria.m8.uf3.CashRun;
 import com.helena.maria.m8.uf3.actors.Money;
+import com.helena.maria.m8.uf3.actors.MoneyType;
 import com.helena.maria.m8.uf3.actors.Police;
 import com.helena.maria.m8.uf3.actors.Thief;
 import com.helena.maria.m8.uf3.helpers.AssetManager;
@@ -81,19 +82,22 @@ public class GameScreen implements Screen {
 
         moneyList = new Array<>();
 
-        // Posiciones de dinero, ajusta según el mapa
-        Vector2[] moneyPositions = {
-            new Vector2(50, 50), new Vector2(150, 70), new Vector2(200, 100),
-            new Vector2(100, 30), new Vector2(220, 10), new Vector2(20, 90), new Vector2(180, 60)
+        MoneyType[] types = {MoneyType.COIN, MoneyType.MONEYBAG, MoneyType.GOLD};
+        Vector2[] positions = {
+            new Vector2(300, 70),
+            new Vector2(970, 30),
+            new Vector2(990, 630)
         };
 
-        for (Vector2 pos : moneyPositions) {
-            Money money = new Money(pos.x, pos.y, 40, 40);
+        for (int i = 0; i < positions.length; i++) {
+            MoneyType type = types[i % types.length];
+            Money money = new Money(positions[i].x, positions[i].y, 180, 180, type);
             moneyList.add(money);
             stage.addActor(money);
         }
 
         Gdx.input.setInputProcessor(new InputHandler(this));
+
 
 
         lightTile = ChessBoardMap.generateTile(Color.LIGHT_GRAY);
@@ -158,9 +162,10 @@ public class GameScreen implements Screen {
             for (Money money : moneyList) {
                 if (money.collides(thief)) {
                     money.collect();
-                    moneyCollected++;
+                    moneyCollected += money.getValue();
                 }
             }
+
 
             // Comprobamos si el ladrón ha llegado al final del mapa
             if (moneyCollected > 0 && thief.getX() >= Settings.GAME_WIDTH - thief.getWidth()) {
