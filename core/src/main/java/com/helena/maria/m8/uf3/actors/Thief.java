@@ -41,7 +41,7 @@ public class Thief extends Actor {
 
         collisionRect = new Rectangle();
 
-        setBounds(position.x, position.y, width, height);
+        setBounds(x, y, width, height);
         setTouchable(Touchable.enabled);
     }
 
@@ -51,7 +51,7 @@ public class Thief extends Actor {
     public float getHeight(){ return  height; }
 
     public Rectangle getCollisionRect(){
-        collisionRect.set(position.x, position.y, width, height);
+        collisionRect.set(getX(), getY(), width, height);
         return collisionRect;
     }
 
@@ -59,7 +59,7 @@ public class Thief extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha){
         super.draw(batch, parentAlpha);
-        batch.draw(getCurrentFrame(Gdx.graphics.getDeltaTime()), position.x, position.y, width,height);
+        batch.draw(getCurrentFrame(Gdx.graphics.getDeltaTime()), getX(), getY(), getWidth(),getHeight());
     }
 
     public void move(float dx, float dy){
@@ -69,9 +69,19 @@ public class Thief extends Actor {
         if(dx > 0) direction = THIEF_RIGHT;
         else if(dx < 0) direction = THIEF_LEFT;
 
-        position.add(dx, dy);
-        setPosition(position.x, position.y);
     }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+
+        if (!isPaused) {
+            moveBy(velocity.x * delta, velocity.y * delta);
+        }
+
+        collisionRect.set(getX(), getY(), getWidth(), getHeight());
+    }
+
 
     public TextureRegion getCurrentFrame(float delta){
         stateTime += delta;

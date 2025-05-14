@@ -71,7 +71,7 @@ public class GameScreen implements Screen {
         for (int i = 0; i < patrolPoints.length; i++) {
             Vector2 start = patrolPoints[i][0];
             Vector2 end = patrolPoints[i][1];
-            Police police = new Police(start, end, 100, 100);
+            Police police = new Police(start, end, Settings.POLICE_WIDTH, Settings.POLICE_HEIGHT);
             stage.addActor(police);
         }
 
