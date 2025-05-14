@@ -84,14 +84,21 @@ public class GameScreen implements Screen {
 
         MoneyType[] types = {MoneyType.COIN, MoneyType.MONEYBAG, MoneyType.GOLD};
         Vector2[] positions = {
-            new Vector2(300, 70),
-            new Vector2(970, 30),
-            new Vector2(990, 630)
+            new Vector2(40, 72),
+            new Vector2(81, 12),
+            new Vector2(84, 48),
+            new Vector2(150, 28),
+            new Vector2(170, 1),
+            new Vector2(40, 5),
+            new Vector2(150, 72),
+            new Vector2(192, 45),
+            new Vector2(117, 81),
+            new Vector2(29, 38)
         };
 
         for (int i = 0; i < positions.length; i++) {
             MoneyType type = types[i % types.length];
-            Money money = new Money(positions[i].x, positions[i].y, 180, 180, type);
+            Money money = new Money(positions[i].x, positions[i].y, 20, 20, type);
             moneyList.add(money);
             stage.addActor(money);
         }
