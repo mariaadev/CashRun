@@ -111,6 +111,10 @@ public class Police extends Actor {
 
 
     public Rectangle getCollisionRect() {
+        float insetX = width * 0.5f;
+        float insetY = height * 0.5f;
+        collisionRect.set(position.x + insetX, position.y + insetY,
+            width - 2 * insetX, height - 2 * insetY);
         return collisionRect;
     }
 

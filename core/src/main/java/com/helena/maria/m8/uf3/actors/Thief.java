@@ -50,7 +50,11 @@ public class Thief extends Actor {
     public float getHeight(){ return  height; }
 
     public Rectangle getCollisionRect(){
-        collisionRect.set(getX(), getY(), width, height);
+        float insetX = width * 0.5f; /*reducir un 20% el rectangulo para que no sea tan grande*/
+        float insetY = height * 0.5f;
+        collisionRect.set(getX() + insetX, getY() + insetY,
+            width - 2 * insetX, height - 2 * insetY);
+
         return collisionRect;
     }
 
