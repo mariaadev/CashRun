@@ -40,7 +40,7 @@ public class SplashScreen implements Screen {
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(0, 0, 0, 0.5f);
+        pixmap.setColor(0, 0, 0, 0.80f);
         pixmap.fill();
         backgroundOverlay = new Texture(pixmap);
         pixmap.dispose();
@@ -72,8 +72,7 @@ public class SplashScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 0.3f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        gameScreen.render(delta);
 
         camera.update();
         batch.setProjectionMatrix(camera.combined);
@@ -81,9 +80,9 @@ public class SplashScreen implements Screen {
         batch.begin();
 
         /*fons transparent*/
-        batch.setColor(0, 0, 0, 0.5f);
-        batch.draw(backgroundOverlay, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.setColor(1, 1, 1, 1);
+        batch.draw(backgroundOverlay, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
 
         float centerX = Gdx.graphics.getWidth() / 2f;
         float centerY = Gdx.graphics.getHeight() / 2f;
