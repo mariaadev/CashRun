@@ -8,14 +8,18 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.helena.maria.m8.uf3.CashRun;
+import com.helena.maria.m8.uf3.actors.GameState;
 import com.helena.maria.m8.uf3.actors.Money;
 import com.helena.maria.m8.uf3.actors.MoneyType;
 import com.helena.maria.m8.uf3.actors.Police;
@@ -45,8 +49,11 @@ public class GameScreen implements Screen {
     private boolean reachedEnd = false;
     private int moneyCollected = 0;
 
+    private BitmapFont font;
 
     private Texture lightTile, darkTile;
+
+    private GameState gameState = GameState.RUNNING;
 
     public GameScreen(Game game){
         AssetManager.music.play();
@@ -116,6 +123,14 @@ public class GameScreen implements Screen {
         lightTile = ChessBoardMap.generateTile(Color.LIGHT_GRAY);
         darkTile = ChessBoardMap.generateTile(Color.DARK_GRAY);
 
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixelifySans.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 8;
+        parameter.color = Color.WHITE;
+        font = generator.generateFont(parameter);
+        generator.dispose();
+
+
     }
 
     @Override
@@ -155,52 +170,69 @@ public class GameScreen implements Screen {
         }
         batch.end(); // <- FIN antes de que stage lo use
 
-        // Lógica de movimiento y colisión
-        if (!gameOver) {
+        /*Lògica col·lisions*/
+        if (gameState == GameState.RUNNING) {
             for (Actor actor : stage.getActors()) {
                 if (actor instanceof Police) {
                     Police police = (Police) actor;
                     if (police.collides(thief)) {
                         AssetManager.gameOver.play();
                         thief.remove();
-                        gameOver = true;
+                        gameState = GameState.GAME_OVER;
                         break;
                     }
                 }
             }
         }
 
-        if (!gameOver && !gameWon) {
+        if (gameState == GameState.RUNNING) {
             Iterator<Money> iterator = moneyList.iterator();
             while (iterator.hasNext()) {
                 Money money = iterator.next();
                 if (money.collides(thief)) {
                     money.collect();
                     moneyCollected += money.getValue();
-                    /*Hacer desaparecer el dinero una vez recogido*/
                     iterator.remove();
                 }
             }
 
-
-            // Comprobamos si el ladrón ha llegado al final del mapa
             if (moneyCollected > 0 && thief.getX() >= Settings.GAME_WIDTH - thief.getWidth()) {
                 AssetManager.winner.play();
-                gameWon = true;
+                gameState = GameState.WINNER;
             }
-        }
 
-        // Dibuja actores
-        viewport.apply();
-        batch.setProjectionMatrix(camera.combined);
-        stage.act(delta);
+            stage.act(delta);
+
+    }
+
         stage.draw();
+        batch.begin();
 
-        if (gameWon) {
-            batch.begin();
-            // font.draw(batch, "¡Victoria!", 100, 100);
-            batch.end();
+
+        if (gameState == GameState.GAME_OVER) {
+            /*GAME OVER*/
+            String gameOverText = "GAME OVER";
+            GlyphLayout layout = new GlyphLayout(font, gameOverText);
+            float x = (Settings.GAME_WIDTH - layout.width) / 2;
+            float y = (Settings.GAME_HEIGHT + layout.height) / 2;
+            font.draw(batch, layout, x, y);
+        } else if (gameState == GameState.WINNER) {
+            /*WINNER*/
+            String winnerText = "YOU WIN!";
+            GlyphLayout layout = new GlyphLayout(font, winnerText);
+            float x = (Settings.GAME_WIDTH - layout.width) / 2;
+            float y = (Settings.GAME_HEIGHT + layout.height) / 2;
+            font.draw(batch, layout, x, y);
+        } else {
+            /*RUNNING*/
+            String scoreText = moneyCollected + " PTS";
+            GlyphLayout layout = new GlyphLayout(font, scoreText);
+            float x = Settings.GAME_WIDTH - layout.width - 5;
+            float y = Settings.GAME_HEIGHT - 8;
+            font.draw(batch, layout, x, y);
         }
+
+        batch.end();
 
     }
 
@@ -221,6 +253,8 @@ public class GameScreen implements Screen {
         stage.dispose();
         lightTile.dispose();
         darkTile.dispose();
+        font.dispose();
+
     }
 
     public Thief getThief(){ return thief; }
