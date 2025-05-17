@@ -114,12 +114,6 @@ public class GameScreen implements Screen {
         }
 
 
-
-        InputMultiplexer multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(new InputHandler(this));
-        multiplexer.addProcessor(stage);
-        Gdx.input.setInputProcessor(multiplexer);
-
         lightTile = ChessBoardMap.generateTile(Color.LIGHT_GRAY);
         darkTile = ChessBoardMap.generateTile(Color.DARK_GRAY);
 
@@ -130,12 +124,18 @@ public class GameScreen implements Screen {
         font = generator.generateFont(parameter);
         generator.dispose();
 
-
+        setupInput();
+    }
+    private void setupInput() {
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(new InputHandler(this));
+        multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(multiplexer);
     }
 
     @Override
     public void show() {
-
+        setupInput();
     }
 
     @Override
@@ -179,7 +179,8 @@ public class GameScreen implements Screen {
                         AssetManager.gameOver.play();
                         thief.remove();
                         gameState = GameState.GAME_OVER;
-                        break;
+                        game.setScreen(new FinalScreen(game, gameState));
+                        return;
                     }
                 }
             }
@@ -199,6 +200,8 @@ public class GameScreen implements Screen {
             if (moneyCollected > 0 && thief.getX() >= Settings.GAME_WIDTH - thief.getWidth()) {
                 AssetManager.winner.play();
                 gameState = GameState.WINNER;
+                game.setScreen(new FinalScreen(game, gameState));
+                return;
             }
 
             stage.act(delta);
@@ -208,29 +211,13 @@ public class GameScreen implements Screen {
         stage.draw();
         batch.begin();
 
+        /*RUNNING*/
+        String scoreText = moneyCollected + " PTS";
+        GlyphLayout layout = new GlyphLayout(font, scoreText);
+        float x = Settings.GAME_WIDTH - layout.width - 5;
+        float y = Settings.GAME_HEIGHT - 8;
+        font.draw(batch, layout, x, y);
 
-        if (gameState == GameState.GAME_OVER) {
-            /*GAME OVER*/
-            String gameOverText = "GAME OVER";
-            GlyphLayout layout = new GlyphLayout(font, gameOverText);
-            float x = (Settings.GAME_WIDTH - layout.width) / 2;
-            float y = (Settings.GAME_HEIGHT + layout.height) / 2;
-            font.draw(batch, layout, x, y);
-        } else if (gameState == GameState.WINNER) {
-            /*WINNER*/
-            String winnerText = "YOU WIN!";
-            GlyphLayout layout = new GlyphLayout(font, winnerText);
-            float x = (Settings.GAME_WIDTH - layout.width) / 2;
-            float y = (Settings.GAME_HEIGHT + layout.height) / 2;
-            font.draw(batch, layout, x, y);
-        } else {
-            /*RUNNING*/
-            String scoreText = moneyCollected + " PTS";
-            GlyphLayout layout = new GlyphLayout(font, scoreText);
-            float x = Settings.GAME_WIDTH - layout.width - 5;
-            float y = Settings.GAME_HEIGHT - 8;
-            font.draw(batch, layout, x, y);
-        }
 
         batch.end();
 
@@ -265,6 +252,7 @@ public class GameScreen implements Screen {
     }
 
     public void restartGame() {
-        game.setScreen(new GameScreen(game));  // Cambia la pantalla a ReadyScreen
+        game.setScreen(new GameScreen(game));
+
     }
 }

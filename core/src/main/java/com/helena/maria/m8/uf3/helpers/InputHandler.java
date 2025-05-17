@@ -84,6 +84,9 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if (touchStart == null) {
+            return true;
+        }
         Vector2 touchEnd = new Vector2(screenX, screenY);
         Vector2 swipe = touchEnd.cpy().sub(touchStart);
 
@@ -109,7 +112,7 @@ public class InputHandler implements InputProcessor {
         } else {
             thief.move(0, 0);
         }
-
+        touchStart = null;
         return true;
     }
 
