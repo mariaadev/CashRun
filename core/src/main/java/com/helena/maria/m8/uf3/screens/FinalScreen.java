@@ -24,43 +24,34 @@ public class FinalScreen implements Screen {
     private final Texture backgroundOverlay;
 
     private final GameState gameState;
-
-    private final float centerX;
-    private final float centerY;
-
-    private final float iconSize = 400f;
+    private final GameScreen gameScreen;
+    private final float iconSize = 350f;
     private final float thiefSize = iconSize * 2.2f;
     private final float policeSize = iconSize * 1.8f;
     private final float moneySize = iconSize * 1.5f;
     private final float titleSize = 2.5f;
 
-    public FinalScreen(Game game, GameState gameState) {
+    public FinalScreen(Game game, GameState gameState, GameScreen gameScreen) {
         this.game = game;
         this.gameState = gameState;
-
+        this.gameScreen = gameScreen;
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // Fondo overlay transparente negro (como en SplashScreen)
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(0, 0, 0, 0.8f);
         pixmap.fill();
         backgroundOverlay = new Texture(pixmap);
         pixmap.dispose();
 
-        // Fuente para mensaje final
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixelifySans.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 50;
+        parameter.size = 70;
         parameter.color = Color.WHITE;
         font = generator.generateFont(parameter);
         generator.dispose();
 
-        centerX = Gdx.graphics.getWidth() / 2f;
-        centerY = Gdx.graphics.getHeight() / 2f;
-
-        // Procesar input para reiniciar juego (Enter o clic)
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean keyDown(int keycode) {
@@ -85,9 +76,7 @@ public class FinalScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0,0,0,1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        gameScreen.render(delta);
         camera.update();
         batch.setProjectionMatrix(camera.combined);
 
@@ -95,8 +84,24 @@ public class FinalScreen implements Screen {
 
         batch.draw(backgroundOverlay, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // Según estado dibuja imagen y texto
+        float centerX = Gdx.graphics.getWidth() / 2f;
+        float centerY = Gdx.graphics.getHeight() / 2f ;
+
+        float iconY = centerY;
+        float spaceBetweenIcons = -400f;
+
+        float thiefX = centerX - thiefSize / 2 + 200;
+        float policeX = thiefX - spaceBetweenIcons - policeSize + 50;
+        float moneyX = thiefX + thiefSize + spaceBetweenIcons;
+
+        float thiefY = iconY + -100f;
+        float policeY = iconY + -30f;
+        float moneyY = iconY + -30;
+
         if (gameState == GameState.GAME_OVER) {
+            batch.draw(AssetManager.policeRight[1], policeX, policeY, policeSize, policeSize);
+            batch.draw(AssetManager.thief, thiefX, thiefY, thiefSize, thiefSize);
+
             batch.draw(AssetManager.titleGameover,
                 centerX - AssetManager.titleGameover.getWidth() * titleSize / 2,
                 centerY - AssetManager.titleGameover.getHeight() * titleSize / 2,
@@ -104,6 +109,17 @@ public class FinalScreen implements Screen {
                 AssetManager.titleGameover.getHeight() * titleSize);
 
         } else if (gameState == GameState.WINNER) {
+            float spacing = 30f;
+            float totalWidth = iconSize * 5 + spacing * 4;
+            float startX = centerX - totalWidth / 2f;
+
+            batch.draw(AssetManager.coins, startX, iconY, moneySize, moneySize);
+            batch.draw(AssetManager.moneyBack, startX + (moneySize + spacing) * 1, moneyY, moneySize, moneySize);
+            batch.draw(AssetManager.thiefRight[0], startX + (thiefSize + spacing) * 2, thiefY , thiefSize, thiefSize);
+            batch.draw(AssetManager.coins, startX + (moneySize + spacing) * 3, moneyY, moneySize, moneySize);
+            batch.draw(AssetManager.moneyBack, startX + (moneySize + spacing) * 4, moneyY, moneySize, moneySize);
+
+
             batch.draw(AssetManager.titleWinner,
                 centerX - AssetManager.titleWinner.getWidth() * titleSize / 2,
                 centerY - AssetManager.titleWinner.getHeight() * titleSize / 2,

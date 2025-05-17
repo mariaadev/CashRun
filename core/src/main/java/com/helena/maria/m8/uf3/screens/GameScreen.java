@@ -179,7 +179,7 @@ public class GameScreen implements Screen {
                         AssetManager.gameOver.play();
                         thief.remove();
                         gameState = GameState.GAME_OVER;
-                        game.setScreen(new FinalScreen(game, gameState));
+                        game.setScreen(new FinalScreen(game, gameState, this));
                         return;
                     }
                 }
@@ -200,7 +200,7 @@ public class GameScreen implements Screen {
             if (moneyCollected > 0 && thief.getX() >= Settings.GAME_WIDTH - thief.getWidth()) {
                 AssetManager.winner.play();
                 gameState = GameState.WINNER;
-                game.setScreen(new FinalScreen(game, gameState));
+                game.setScreen(new FinalScreen(game, gameState, this));
                 return;
             }
 
