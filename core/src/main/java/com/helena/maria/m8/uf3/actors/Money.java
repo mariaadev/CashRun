@@ -50,6 +50,12 @@ public class Money extends Actor {
         return !collected && bounds.overlaps(thief.getBounds());
     }
 
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        bounds.set(getX(), getY(), getWidth(), getHeight());
+    }
+
     public void collect() {
         collected = true;
         setVisible(false);
@@ -58,6 +64,10 @@ public class Money extends Actor {
 
     public boolean isCollected() {
         return collected;
+    }
+
+    public Rectangle getBounds() {
+        return bounds;
     }
 
     public int getValue() {

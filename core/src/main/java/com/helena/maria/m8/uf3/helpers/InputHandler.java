@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Timer;
 import com.helena.maria.m8.uf3.actors.Thief;
 import com.helena.maria.m8.uf3.screens.GameScreen;
 
@@ -19,6 +20,8 @@ public class InputHandler implements InputProcessor {
     private int previousX = 0;
     private int previousY = 0;
 
+    private Vector2 touchStart;
+
     public InputHandler(GameScreen screen){
         this.screen = screen;
         this.thief = screen.getThief();
@@ -26,6 +29,7 @@ public class InputHandler implements InputProcessor {
     }
     @Override
     public boolean keyDown(int keycode) {
+        Gdx.app.log("INPUT", "Key Pressed: " + keycode);
         switch (keycode) {
             case Input.Keys.UP:
             case Input.Keys.W:
@@ -63,6 +67,8 @@ public class InputHandler implements InputProcessor {
         previousX = screenX;
         previousY = screenY;
 
+        touchStart = new Vector2(screenX, screenY);
+
         stageCoord = stage.screenToStageCoordinates(new Vector2(screenX, screenY));
         Actor actorHit = stage.hit(stageCoord.x, stageCoord.y, true);
         if(actorHit != null){
@@ -78,7 +84,32 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        thief.move(0, 0);
+        Vector2 touchEnd = new Vector2(screenX, screenY);
+        Vector2 swipe = touchEnd.cpy().sub(touchStart);
+
+        if (swipe.len() > 50) {
+            float dx = 0;
+            float dy = 0;
+
+            if (Math.abs(swipe.x) > Math.abs(swipe.y)) {
+                dx = swipe.x > 0 ? 2 : -2;
+            } else {
+                dy = swipe.y > 0 ? -2 : 2;
+            }
+
+            thief.move(dx, dy);
+
+            // Detenerse luego de un pequeño tiempo si es swipe (movimiento único)
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    thief.move(0, 0);
+                }
+            }, 0.2f);
+        } else {
+            thief.move(0, 0);
+        }
+
         return true;
     }
 

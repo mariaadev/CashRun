@@ -2,6 +2,7 @@ package com.helena.maria.m8.uf3.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -24,6 +25,8 @@ import com.helena.maria.m8.uf3.helpers.InputHandler;
 import com.helena.maria.m8.uf3.map.ChessBoardMap;
 import com.helena.maria.m8.uf3.utils.Settings;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+
+import java.util.Iterator;
 
 public class GameScreen implements Screen {
     private SpriteBatch batch;
@@ -68,12 +71,12 @@ public class GameScreen implements Screen {
             {new Vector2(30, 60), new Vector2(180, 60)}
         };
 
-        for (int i = 0; i < patrolPoints.length; i++) {
-            Vector2 start = patrolPoints[i][0];
-            Vector2 end = patrolPoints[i][1];
-            Police police = new Police(start, end, Settings.POLICE_WIDTH, Settings.POLICE_HEIGHT);
+        for (int i = 0; i < 5; i++) {
+            Police police = new Police(Settings.POLICE_WIDTH, Settings.POLICE_HEIGHT, thief);
             stage.addActor(police);
         }
+
+
 
         stage.addActor(thief);
 
@@ -103,9 +106,12 @@ public class GameScreen implements Screen {
             stage.addActor(money);
         }
 
-        Gdx.input.setInputProcessor(new InputHandler(this));
 
 
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(new InputHandler(this));
+        multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(multiplexer);
 
         lightTile = ChessBoardMap.generateTile(Color.LIGHT_GRAY);
         darkTile = ChessBoardMap.generateTile(Color.DARK_GRAY);
@@ -114,7 +120,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
 
     }
 
@@ -166,10 +171,14 @@ public class GameScreen implements Screen {
         }
 
         if (!gameOver && !gameWon) {
-            for (Money money : moneyList) {
+            Iterator<Money> iterator = moneyList.iterator();
+            while (iterator.hasNext()) {
+                Money money = iterator.next();
                 if (money.collides(thief)) {
                     money.collect();
                     moneyCollected += money.getValue();
+                    /*Hacer desaparecer el dinero una vez recogido*/
+                    iterator.remove();
                 }
             }
 
