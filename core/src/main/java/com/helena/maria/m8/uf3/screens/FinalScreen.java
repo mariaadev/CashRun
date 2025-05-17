@@ -109,26 +109,27 @@ public class FinalScreen implements Screen {
                 AssetManager.titleGameover.getHeight() * titleSize);
 
         } else if (gameState == GameState.WINNER) {
-            float spacing = 30f;
+            float spacing = 0f;
             float totalWidth = iconSize * 5 + spacing * 4;
             float startX = centerX - totalWidth / 2f;
-
             batch.draw(AssetManager.coins, startX, iconY, moneySize, moneySize);
-            batch.draw(AssetManager.moneyBack, startX + (moneySize + spacing) * 1, moneyY, moneySize, moneySize);
-            batch.draw(AssetManager.thiefRight[0], startX + (thiefSize + spacing) * 2, thiefY , thiefSize, thiefSize);
-            batch.draw(AssetManager.coins, startX + (moneySize + spacing) * 3, moneyY, moneySize, moneySize);
-            batch.draw(AssetManager.moneyBack, startX + (moneySize + spacing) * 4, moneyY, moneySize, moneySize);
+            batch.draw(AssetManager.moneyBack, startX + 350f, moneyY, moneySize, moneySize);
+
+            batch.draw(AssetManager.thiefRight[0], startX + 550f, thiefY , thiefSize, thiefSize);
+
+            batch.draw(AssetManager.coins, startX + + 1000f, moneyY, moneySize, moneySize);
+            batch.draw(AssetManager.moneyBack, startX + 1350f, moneyY, moneySize, moneySize);
 
 
             batch.draw(AssetManager.titleWinner,
-                centerX - AssetManager.titleWinner.getWidth() * titleSize / 2,
-                centerY - AssetManager.titleWinner.getHeight() * titleSize / 2,
-                AssetManager.titleWinner.getWidth() * titleSize,
-                AssetManager.titleWinner.getHeight() * titleSize);
+                centerX - AssetManager.titleWinner.getWidth() * 3f / 2,
+                centerY - AssetManager.titleWinner.getHeight() * 3f / 2,
+                AssetManager.titleWinner.getWidth() * 3f,
+                AssetManager.titleWinner.getHeight() * 3f);
 
         }
         font.setColor(Color.WHITE);
-        font.draw(batch, "Pulsa enter o clica para volver a jugar", centerX - 550, centerY - 250);
+        font.draw(batch, "Pulsa enter o clica para volver a jugar", centerX - 600, centerY - 250);
 
         batch.end();
     }
