@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.helena.maria.m8.uf3.CashRun;
 import com.helena.maria.m8.uf3.actors.GameState;
 import com.helena.maria.m8.uf3.actors.Money;
@@ -257,4 +258,9 @@ public class GameScreen implements Screen {
         game.setScreen(new GameScreen(game));
 
     }
+
+    public Viewport getViewport() {
+        return viewport;
+    }
+
 }

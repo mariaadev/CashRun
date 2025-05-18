@@ -33,6 +33,9 @@ public class Thief extends Actor {
 
     private float speed = 1.2f; // coincide con el SPEED de InputHandler
 
+    private Vector2 targetPosition = null;
+    private static final float TOLERANCE = 1.0f;
+
     public Thief(float x, float y, int width, int height){
         this.width = width;
         this.height = height;
@@ -40,7 +43,7 @@ public class Thief extends Actor {
         this.thiefAnimationLeft = AssetManager.thiefAnimationLeft;
         this.thiefAnimationRight = AssetManager.thiefAnimationRight;
         this.thiefPause = AssetManager.thief;
-
+        isPaused = true;
         collisionRect = new Rectangle();
 
         setBounds(x, y, width, height);
@@ -72,6 +75,10 @@ public class Thief extends Actor {
         batch.draw(getCurrentFrame(Gdx.graphics.getDeltaTime()), getX(), getY(), getWidth(),getHeight());
     }
 
+    public void moveTo(float x, float y) {
+        targetPosition = new Vector2(x - width / 2f, y - height / 2f);
+    }
+
     /**
      * dx y dy deben ser valores como -1, 0, 1 (o fracciones).
      * La velocidad real aplicada será dx*speed, dy*speed.
@@ -89,31 +96,34 @@ public class Thief extends Actor {
     public void act(float delta) {
         super.act(delta);
 
-        // Movimiento continuo por teclado si alguna tecla está pulsada
         float dx = 0, dy = 0;
-
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) dx = -1;
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) dx = 1;
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) dy = 1;
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) dy = -1;
 
-        // Si hay input de teclado, ignora la velocidad puesta por touch/drag
         if (dx != 0 || dy != 0) {
-            velocity.set(dx * speed, dy * speed);
-            isPaused = false;
-            if (dx > 0) direction = THIEF_RIGHT;
-            else if (dx < 0) direction = THIEF_LEFT;
+            targetPosition = null; // Cancelar movimiento automático
+            move(dx, dy);
+        } else if (targetPosition != null) {
+            Vector2 currentPosition = new Vector2(getX(), getY());
+            Vector2 direction = targetPosition.cpy().sub(currentPosition);
+            float distance = direction.len();
+
+            if (distance < TOLERANCE) {
+                targetPosition = null;
+                move(0, 0);
+            } else {
+                direction.nor();
+                move(direction.x, direction.y);
+            }
         }
 
-        float newX = getX() + velocity.x;
-        float newY = getY() + velocity.y;
-
-        newX = Math.max(0, Math.min(newX, Settings.GAME_WIDTH - getWidth()));
-        newY = Math.max(0, Math.min(newY, Settings.GAME_HEIGHT - getHeight()));
-
-        setPosition(newX, newY);
+        moveBy(velocity.x, velocity.y);
         collisionRect.set(getX(), getY(), getWidth(), getHeight());
     }
+
+
 
     public TextureRegion getCurrentFrame(float delta){
         stateTime += delta;
