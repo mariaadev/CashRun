@@ -42,7 +42,9 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        /**** Quan es toca la pantalla, es transforma la posició del toc del dit a coordenades universals. ****/
         Vector3 worldCoordinates = screen.getViewport().unproject(new Vector3(screenX, screenY, 0));
+        /**** Es mou al lladre cap a la posició tocada ****/
         thief.moveTo(worldCoordinates.x, worldCoordinates.y);
         return true;
     }
@@ -61,6 +63,7 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+        /**** Si el treu el dit es cancel·la, s’atura el moviment del lladre. ****/
         isTouchMoving = false;
         thief.move(0, 0);
         lastDragPos = null;

@@ -102,12 +102,20 @@ public class GameScreen implements Screen {
         parameter.color = Color.WHITE;
         font = generator.generateFont(parameter);
         generator.dispose();
+        setupInput();
+    }
 
+    private void setupInput() {
+        /*** InputMultiplezer per gestionar diferents this d'entrades ***/
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(new InputHandler(this));
+        multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(multiplexer);
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+
     }
 
     @Override
