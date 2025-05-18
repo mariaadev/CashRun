@@ -47,7 +47,14 @@ public class Money extends Actor {
     }
 
     public boolean collides(Thief thief) {
-        return !collected && bounds.overlaps(thief.getBounds());
+        Rectangle thiefBounds = thief.getCollisionRect();
+        return !collected && bounds.overlaps(thiefBounds);
+    }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        bounds.set(getX(), getY(), getWidth(), getHeight());
     }
 
     public void collect() {
@@ -58,6 +65,10 @@ public class Money extends Actor {
 
     public boolean isCollected() {
         return collected;
+    }
+
+    public Rectangle getBounds() {
+        return bounds;
     }
 
     public int getValue() {

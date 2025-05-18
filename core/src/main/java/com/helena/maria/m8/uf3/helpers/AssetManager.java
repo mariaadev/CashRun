@@ -14,7 +14,8 @@ public class AssetManager {
     public static Texture sheetPoliceLeft;
     public static Texture sheetPoliceRight;
     public static Texture titleCashRun;
-
+    public static Texture titleWinner;
+    public static Texture titleGameover;
     public static TextureRegion[] thiefLeft;
     public static TextureRegion[] thiefRight;
     public static TextureRegion[] policeLeft;
@@ -57,7 +58,8 @@ public class AssetManager {
         sheetMoney.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
         titleCashRun = new Texture(Gdx.files.internal("images/titles/cashrun.png"));
-
+        titleWinner = new Texture(Gdx.files.internal("images/titles/winner.png"));
+        titleGameover = new Texture(Gdx.files.internal("images/titles/gameover.png"));
         coins = new TextureRegion(sheetMoney, 0, 0, 100, 100);
         gold = new TextureRegion(sheetMoney, 100, 0, 100, 100);
         moneyBack = new TextureRegion(sheetMoney, 200, 0, 100, 100);
