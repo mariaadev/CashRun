@@ -61,8 +61,8 @@ public class Thief extends Actor {
     public float getHeight(){ return  height; }
 
     public Rectangle getCollisionRect(){
-        float insetX = width * 0.5f; // reducir un 20% el rectángulo para que no sea tan grande
-        float insetY = height * 0.5f;
+        float insetX = width * 0.6f; // reducir un 50% el rectángulo para que no sea tan grande
+        float insetY = height * 0.6f;
         collisionRect.set(getX() + insetX, getY() + insetY,
             width - 2 * insetX, height - 2 * insetY);
 
@@ -88,8 +88,8 @@ public class Thief extends Actor {
         velocity.set(dx * speed, dy * speed);
         isPaused = dx == 0 && dy == 0;
 
-        if(dx > 0) direction = THIEF_RIGHT;
-        else if(dx < 0) direction = THIEF_LEFT;
+        if (dx > 0.1f) direction = THIEF_RIGHT;
+        else if (dx < -0.1f) direction = THIEF_LEFT;
     }
 
     @Override
@@ -116,10 +116,15 @@ public class Thief extends Actor {
             } else {
                 direction.nor();
                 move(direction.x, direction.y);
+
             }
+        }  else {
+            move(0, 0);
         }
 
+
         moveBy(velocity.x, velocity.y);
+
         collisionRect.set(getX(), getY(), getWidth(), getHeight());
     }
 
