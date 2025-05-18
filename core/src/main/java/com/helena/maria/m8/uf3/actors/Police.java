@@ -32,6 +32,7 @@ public class Police extends Actor {
 
     private Vector2 target;
 
+    /** Calcula nova velocitat cap a l’objectiu */
     private void updateVelocity() {
         velocity.set(target).sub(position).nor().scl(1.5f);
         direction = velocity.x > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT;
@@ -50,7 +51,7 @@ public class Police extends Actor {
         animationRight = AssetManager.policeAnimationRight;
 
         target = getRandomPoint();
-        updateVelocity();
+        updateVelocity(); // calcula direcció inicial
     }
 
     @Override
@@ -58,11 +59,13 @@ public class Police extends Actor {
         super.act(delta);
         stateTime += delta;
 
+        /** Si arriba prop del destí, escull un nou punt */
         if (position.dst(target) < 2f) {
             target = getRandomPoint();
             updateVelocity();
         }
 
+        /** Mou cap al destí */
         position.add(velocity.x, velocity.y);
         setBounds(position.x, position.y, width, height);
         collisionRect.set(position.x, position.y, width, height);
@@ -76,6 +79,7 @@ public class Police extends Actor {
         batch.draw(currentFrame, position.x, position.y, width, height);
     }
 
+    /** Retorna el frame animat segons direcció */
     private TextureRegion getCurrentFrame() {
         if (direction == DIRECTION_LEFT) {
             return animationLeft.getKeyFrame(stateTime, true);
@@ -84,6 +88,7 @@ public class Police extends Actor {
         }
     }
 
+    /** Escull un punt aleatori lluny del lladre */
     private Vector2 getRandomPoint() {
         Vector2 point;
         Rectangle thiefRect = new Rectangle(thief.getX(), thief.getY(), thief.getWidth(), thief.getHeight());
@@ -118,6 +123,7 @@ public class Police extends Actor {
         return collisionRect;
     }
 
+    /** Detecta col·lisió amb el lladre */
     public boolean collides(Thief thief) {
         return Intersector.overlaps(this.collisionRect, thief.getCollisionRect());
     }

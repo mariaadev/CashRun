@@ -24,6 +24,7 @@ public class Thief extends Actor {
     private Vector2 velocity = new Vector2();
     private float stateTime = 0;
 
+    /** Rectangle per gestionar col·lisions */
     private Rectangle collisionRect;
 
     private Animation<TextureRegion> thiefAnimationLeft;
@@ -31,9 +32,11 @@ public class Thief extends Actor {
 
     private TextureRegion thiefPause;
 
-    private float speed = 1.2f; // coincide con el SPEED de InputHandler
+    /** Velocitat de moviment */
+    private float speed = 1.2f;
 
     private Vector2 targetPosition = null;
+    /** tolerància per aturar-se prop del dest**/
     private static final float TOLERANCE = 1.0f;
 
     public Thief(float x, float y, int width, int height){
@@ -46,6 +49,7 @@ public class Thief extends Actor {
         isPaused = true;
         collisionRect = new Rectangle();
 
+        /** Defineix posició i mida de l'actor a l’escenari */
         setBounds(x, y, width, height);
         setTouchable(Touchable.enabled);
     }
@@ -61,7 +65,8 @@ public class Thief extends Actor {
     public float getHeight(){ return  height; }
 
     public Rectangle getCollisionRect(){
-        float insetX = width * 0.6f; // reducir un 50% el rectángulo para que no sea tan grande
+        /** Defineix una hitbox més petit per col·lisions més realistes */
+        float insetX = width * 0.6f;
         float insetY = height * 0.6f;
         collisionRect.set(getX() + insetX, getY() + insetY,
             width - 2 * insetX, height - 2 * insetY);
@@ -96,6 +101,7 @@ public class Thief extends Actor {
     public void act(float delta) {
         super.act(delta);
 
+        /** Captura moviment amb teclat */
         float dx = 0, dy = 0;
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) dx = -1;
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) dx = 1;
@@ -103,9 +109,11 @@ public class Thief extends Actor {
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) dy = -1;
 
         if (dx != 0 || dy != 0) {
-            targetPosition = null; // Cancelar movimiento automático
+            /** Cancel·la moviment automàtic si hi ha moviment manual */
+            targetPosition = null;
             move(dx, dy);
         } else if (targetPosition != null) {
+            /** Si hi ha destí fixat, mou cap a ell */
             Vector2 currentPosition = new Vector2(getX(), getY());
             Vector2 direction = targetPosition.cpy().sub(currentPosition);
             float distance = direction.len();
@@ -122,21 +130,19 @@ public class Thief extends Actor {
             move(0, 0);
         }
 
-
+        /** Aplica moviment */
         moveBy(velocity.x, velocity.y);
-
         collisionRect.set(getX(), getY(), getWidth(), getHeight());
     }
 
 
-
+    /** Retorna el frame actual per mostrar segons moviment/pausa */
     public TextureRegion getCurrentFrame(float delta){
         stateTime += delta;
 
         if(isPaused){
             return  thiefPause;
         }
-
         return direction == THIEF_RIGHT
             ? thiefAnimationRight.getKeyFrame(stateTime, true)
             : thiefAnimationLeft.getKeyFrame(stateTime, true);

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.helena.maria.m8.uf3.actors.enums.MoneyType;
 import com.helena.maria.m8.uf3.helpers.AssetManager;
 
 public class Money extends Actor {
@@ -17,6 +18,7 @@ public class Money extends Actor {
     public Money(float x, float y, float width, float height, MoneyType type) {
         this.type = type;
 
+        /** Assigna textura i valor segons el tipus de diner */
         switch (type) {
             case COIN:
                 texture = AssetManager.coins;
@@ -46,6 +48,7 @@ public class Money extends Actor {
         }
     }
 
+    /** Comprova col·lisió amb el lladre */
     public boolean collides(Thief thief) {
         Rectangle thiefBounds = thief.getCollisionRect();
         return !collected && bounds.overlaps(thiefBounds);
@@ -57,6 +60,7 @@ public class Money extends Actor {
         bounds.set(getX(), getY(), getWidth(), getHeight());
     }
 
+    /** Marca com recollit */
     public void collect() {
         collected = true;
         setVisible(false);

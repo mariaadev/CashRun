@@ -11,18 +11,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.helena.maria.m8.uf3.CashRun;
-import com.helena.maria.m8.uf3.actors.GameState;
+import com.helena.maria.m8.uf3.actors.enums.GameState;
 import com.helena.maria.m8.uf3.actors.Money;
-import com.helena.maria.m8.uf3.actors.MoneyType;
+import com.helena.maria.m8.uf3.actors.enums.MoneyType;
 import com.helena.maria.m8.uf3.actors.Police;
 import com.helena.maria.m8.uf3.actors.Thief;
 import com.helena.maria.m8.uf3.helpers.AssetManager;
@@ -46,64 +43,44 @@ public class GameScreen implements Screen {
     Game game;
 
     private Array<Money> moneyList;
-    private boolean gameWon = false;
-    private boolean reachedEnd = false;
     private int moneyCollected = 0;
 
     private BitmapFont font;
 
     private Texture lightTile, darkTile;
-
+    /*** Enum per controlar l'estat del joc actual ***/
     private GameState gameState = GameState.RUNNING;
 
     public GameScreen(Game game){
         AssetManager.music.play();
 
         this.game = game;
+        /*** Configura cámara y viewport ***/
         camera = new OrthographicCamera(Settings.GAME_WIDTH, Settings.GAME_HEIGHT);
         camera.setToOrtho(false);
         viewport = new StretchViewport(Settings.GAME_WIDTH, Settings.GAME_HEIGHT, camera);
+
         batch = new SpriteBatch();
         stage = new Stage(viewport, batch);
 
         thief = new Thief(Settings.THIEF_STARTX, Settings.THIEF_STARTY,
             Settings.THIEF_WIDTH, Settings.THIEF_HEIGHT);
 
-        Vector2[][] patrolPoints = {
-            {new Vector2(0, 10), new Vector2(200, 10)},
-            {new Vector2(220, 50), new Vector2(20, 50)},
-            {new Vector2(100, 0), new Vector2(100, 120)},
-            {new Vector2(150, 30), new Vector2(150, 90)},
-            {new Vector2(50, 20), new Vector2(200, 20)},
-            {new Vector2(0, 100), new Vector2(240, 100)},
-            {new Vector2(30, 60), new Vector2(180, 60)}
-        };
-
+        /*** Afegir policies a l'escena ***/
         for (int i = 0; i < 5; i++) {
             Police police = new Police(Settings.POLICE_WIDTH, Settings.POLICE_HEIGHT, thief);
             stage.addActor(police);
         }
 
-
-
         stage.addActor(thief);
-
         thief.setName("thief");
 
-
         moneyList = new Array<>();
-
         MoneyType[] types = {MoneyType.COIN, MoneyType.MONEYBAG, MoneyType.GOLD};
         Vector2[] positions = {
-            new Vector2(40, 72),
-            new Vector2(81, 12),
-            new Vector2(84, 48),
-            new Vector2(150, 28),
-            new Vector2(170, 1),
-            new Vector2(40, 5),
-            new Vector2(150, 72),
-            new Vector2(192, 45),
-            new Vector2(117, 81),
+            new Vector2(40, 72), new Vector2(81, 12), new Vector2(84, 48),
+            new Vector2(150, 28), new Vector2(170, 1), new Vector2(40, 5),
+            new Vector2(150, 72), new Vector2(192, 45), new Vector2(117, 81),
             new Vector2(29, 38)
         };
 
@@ -118,6 +95,7 @@ public class GameScreen implements Screen {
         lightTile = ChessBoardMap.generateTile(Color.LIGHT_GRAY);
         darkTile = ChessBoardMap.generateTile(Color.DARK_GRAY);
 
+        /*** Genera font personalitzada per l'indicador de punts ***/
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixelifySans.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 8;
@@ -125,20 +103,11 @@ public class GameScreen implements Screen {
         font = generator.generateFont(parameter);
         generator.dispose();
 
-        setupInput();
-    }
-    private void setupInput() {
-        Gdx.app.log("M8INPUT", "setupInput llamado");
-        InputMultiplexer multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(new InputHandler(this));
-        multiplexer.addProcessor(stage);
-        Gdx.input.setInputProcessor(multiplexer);
-        Gdx.app.log("M8INPUT", "setInputProcessor hecho");
     }
 
     @Override
     public void show() {
-        setupInput();
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -146,15 +115,15 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        /*** Aplica el viewport i configura la matriu de projecció ***/
         viewport.apply();
         batch.setProjectionMatrix(camera.combined);
 
+        /*** Calcula la mida de cada cel·la per dibuixar el taulell ***/
         float cols = 22f;
         float rows = 10f;
-
         float screenWidth = viewport.getWorldWidth();
         float screenHeight = viewport.getWorldHeight();
-
         float tileSizeX = screenWidth / cols;
         float tileSizeY = screenHeight / rows;
 
@@ -162,7 +131,7 @@ public class GameScreen implements Screen {
         float scaleFactor = 1.05f;
         tileSize *= scaleFactor;
 
-        // Dibuja fondo de tablero
+        /*Dibuixa l'estil del taulell gris fosc i gris clar*/
         batch.begin();
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
@@ -173,7 +142,7 @@ public class GameScreen implements Screen {
         }
         batch.end(); // <- FIN antes de que stage lo use
 
-        /*Lògica col·lisions*/
+        /*** Lògica col·lisions entre el policia i el lladre ***/
         if (gameState == GameState.RUNNING) {
             for (Actor actor : stage.getActors()) {
                 if (actor instanceof Police) {
@@ -189,6 +158,7 @@ public class GameScreen implements Screen {
             }
         }
 
+        /*** Col·lisions amb els diners ***/
         if (gameState == GameState.RUNNING) {
             Iterator<Money> iterator = moneyList.iterator();
             while (iterator.hasNext()) {
@@ -200,6 +170,7 @@ public class GameScreen implements Screen {
                 }
             }
 
+            /*** Comprovació de victoria: arriba a la meta amb mínim 1 bloc de diners ***/
             if (moneyCollected > 0 && thief.getX() >= Settings.GAME_WIDTH - thief.getWidth()) {
                 AssetManager.winner.play();
                 gameState = GameState.WINNER;
@@ -207,14 +178,15 @@ public class GameScreen implements Screen {
                 return;
             }
 
+            /*** Actualiza els actors de l'escenari ***/
             stage.act(delta);
 
     }
-
+        /*** Dibuixa tots els actores de l'escenari ***/
         stage.draw();
         batch.begin();
 
-        /*RUNNING*/
+        /*** Dibuixa el marcador de puntuació ***/
         String scoreText = moneyCollected + " PTS";
         GlyphLayout layout = new GlyphLayout(font, scoreText);
         float x = Settings.GAME_WIDTH - layout.width - 5;
