@@ -21,6 +21,9 @@ public class Police extends Actor {
     private Vector2 position;
     private Vector2 velocity;
 
+    private final Vector2[] corners;
+    private int currentCornerIndex;
+
     private int width, height;
     private int direction;
 
@@ -38,11 +41,33 @@ public class Police extends Actor {
         direction = velocity.x > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT;
     }
 
-    public Police( int width, int height, Thief thief) {
+    private boolean patrolCorners;
+
+    public Police(int width, int height, Thief thief) {
+        this(width, height, thief, false, 0);
+    }
+    public Police( int width, int height, Thief thief,boolean patrolCorners, int startCornerIndex) {
         this.width = width;
         this.height = height;
         this.thief = thief;
-        this.position = getRandomPoint();
+        this.patrolCorners = patrolCorners;
+
+        corners = new Vector2[] {
+            new Vector2(30, 0), /* desplaçat en X per no coincidir amb el lladre */
+            new Vector2(Settings.GAME_WIDTH - width, 0),
+            new Vector2(Settings.GAME_WIDTH - width, Settings.GAME_HEIGHT - height),
+            new Vector2(0, Settings.GAME_HEIGHT - height)
+        };
+
+        if (patrolCorners) {
+            currentCornerIndex = startCornerIndex % corners.length;
+            this.position = new Vector2(corners[currentCornerIndex]);
+            target = corners[(currentCornerIndex + 1) % corners.length];
+        } else {
+            this.position = getRandomPoint();
+            target = getRandomPoint();
+        }
+
         this.velocity = new Vector2();
         this.collisionRect = new Rectangle();
         setBounds(position.x, position.y, width, height);
@@ -50,7 +75,7 @@ public class Police extends Actor {
         animationLeft = AssetManager.policeAnimationLeft;
         animationRight = AssetManager.policeAnimationRight;
 
-        target = getRandomPoint();
+        target = corners[(currentCornerIndex + 1) % corners.length];
         updateVelocity(); // calcula direcció inicial
     }
 
@@ -59,18 +84,24 @@ public class Police extends Actor {
         super.act(delta);
         stateTime += delta;
 
-        /** Si arriba prop del destí, escull un nou punt */
         if (position.dst(target) < 2f) {
-            target = getRandomPoint();
+            if (patrolCorners) {
+                currentCornerIndex = (currentCornerIndex + 1) % corners.length;
+                target = corners[(currentCornerIndex + 1) % corners.length];
+            } else {
+                target = getRandomPoint();
+            }
             updateVelocity();
         }
 
-        /** Mou cap al destí */
         position.add(velocity.x, velocity.y);
+
         position.x = MathUtils.clamp(position.x, 0, Settings.GAME_WIDTH - width);
         position.y = MathUtils.clamp(position.y, 0, Settings.GAME_HEIGHT - height);
+
         setBounds(position.x, position.y, width, height);
         collisionRect.set(position.x, position.y, width, height);
+
 
     }
 

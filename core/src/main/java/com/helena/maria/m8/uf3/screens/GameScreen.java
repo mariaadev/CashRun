@@ -67,10 +67,18 @@ public class GameScreen implements Screen {
             Settings.THIEF_WIDTH, Settings.THIEF_HEIGHT);
 
         /*** Afegir policies a l'escena ***/
-        for (int i = 0; i < 8; i++) {
+
+        /** patrulla de 3 pels bordes **/
+        for (int i = 0; i < 3; i++) {
+            Police police = new Police(Settings.POLICE_WIDTH, Settings.POLICE_HEIGHT, thief, true, i);
+            stage.addActor(police);
+        }
+        /** patrulla de 8 pel mig **/
+        for (int i = 0; i < 7; i++) {
             Police police = new Police(Settings.POLICE_WIDTH, Settings.POLICE_HEIGHT, thief);
             stage.addActor(police);
         }
+
 
         stage.addActor(thief);
         thief.setName("thief");
