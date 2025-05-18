@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -132,6 +133,10 @@ public class Thief extends Actor {
 
         /** Aplica moviment */
         moveBy(velocity.x, velocity.y);
+        float clampedX = MathUtils.clamp(getX(), 0, Settings.GAME_WIDTH - getWidth());
+        float clampedY = MathUtils.clamp(getY(), 0, Settings.GAME_HEIGHT - getHeight());
+        setPosition(clampedX, clampedY);
+
         collisionRect.set(getX(), getY(), getWidth(), getHeight());
     }
 

@@ -67,6 +67,8 @@ public class Police extends Actor {
 
         /** Mou cap al destí */
         position.add(velocity.x, velocity.y);
+        position.x = MathUtils.clamp(position.x, 0, Settings.GAME_WIDTH - width);
+        position.y = MathUtils.clamp(position.y, 0, Settings.GAME_HEIGHT - height);
         setBounds(position.x, position.y, width, height);
         collisionRect.set(position.x, position.y, width, height);
 
@@ -94,10 +96,10 @@ public class Police extends Actor {
         Rectangle thiefRect = new Rectangle(thief.getX(), thief.getY(), thief.getWidth(), thief.getHeight());
 
         Rectangle safeZone = new Rectangle(thiefRect);
-        safeZone.setX(safeZone.getX() - 40);
-        safeZone.setY(safeZone.getY() - 40);
-        safeZone.setWidth(safeZone.getWidth() + 80);
-        safeZone.setHeight(safeZone.getHeight() + 80);
+        safeZone.setX(safeZone.getX() - 10);
+        safeZone.setY(safeZone.getY() - 10);
+        safeZone.setWidth(safeZone.getWidth() );
+        safeZone.setHeight(safeZone.getHeight());
 
         Rectangle testRect = new Rectangle();
         int attempts = 0;
