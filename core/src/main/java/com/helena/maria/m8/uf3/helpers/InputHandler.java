@@ -33,39 +33,11 @@ public class InputHandler implements InputProcessor {
     }
 
     @Override
-    public boolean keyDown(int keycode) {
-        Gdx.app.log("INPUT", "Key Pressed: " + keycode);
-        switch (keycode) {
-            case Input.Keys.UP:
-            case Input.Keys.W:
-                thief.move(0, 1);
-                break;
-            case Input.Keys.DOWN:
-            case Input.Keys.S:
-                thief.move(0, -1);
-                break;
-            case Input.Keys.LEFT:
-            case Input.Keys.A:
-                thief.move(-1, 0);
-                break;
-            case Input.Keys.RIGHT:
-            case Input.Keys.D:
-                thief.move(1, 0);
-                break;
-        }
-        return true;
-    }
-
+    public boolean keyDown(int keycode) { return false; }
     @Override
-    public boolean keyUp(int keycode) {
-        thief.move(0, 0);
-        return true;
-    }
-
+    public boolean keyUp(int keycode) { return false; }
     @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
+    public boolean keyTyped(char character) { return false; }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
