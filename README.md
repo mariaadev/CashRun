@@ -1,32 +1,81 @@
-# CashRun
+# Cashrun
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+**Cashrun** is a video game developed in **Java** using **Android Studio**. The game simulates a bank robbery where a thief must avoid getting caught by guards while collecting all the money scattered across the map.
 
-This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
+---
 
-## Platforms
+## 🎮 Concept
 
-- `core`: Main module with the application logic shared by all platforms.
-- `android`: Android mobile platform. Needs Android SDK.
+Cashrun is based on the premise of a thief entering a bank with the goal of collecting all the money distributed throughout the map.
 
-## Gradle
+The game map simulates the interior of a bank protected by multiple security guards who patrol and monitor areas with money to prevent theft.
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+---
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `android:lint`: performs Android project validation.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `test`: runs unit tests (if any).
+## 🎯 Objective
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+The main goal for the player is to control the thief and collect all the money scattered in the bank while avoiding capture by the guards.
+
+- **Win Condition:** Collect minimum a money item and arrive to the other side of the map without being caught.
+- **Lose Condition:** Collide with any security guard, which ends the game immediately.
+
+---
+
+## ⚙️ Mechanics
+
+### Player Movement
+- The thief can move in four directions: up, down, left, and right.
+- Free movement within the map boundaries.
+- Must avoid guard patrol routes.
+
+### Enemy Movement
+- Guards patrol predefined paths around the map.
+- They move in eight directions, including diagonals (up, down, left, right, and diagonals).
+- Their purpose is to block or intercept the player.
+
+### Lose Condition
+- Collision with any guard results in an immediate loss.
+
+### Win Condition
+- Collect all the money without being caught.
+
+---
+
+## 🎮 Controls
+
+- **Touchscreen:** Swipe gestures to move the thief (primary control method).
+- **Keyboard:** Arrow keys for movement.
+- **Mouse:** Click or drag to direct the thief’s movement.
+
+---
+
+## 🖼 Screenshots
+
+![Screenshot 1](screenshots/Screenshot1.png)  
+![Screenshot 2](screenshots/Screenshot2.png)
+![Screenshot 3](screenshots/Screenshot3.png)  
+![Screenshot 4](screenshots/Screenshot4.png)
+
+---
+
+## 📂 Project Structure
+
+- Developed with Java and Android Studio.
+- Includes classes for player, guards, map, and collision logic.
+- Guards patrol with custom behaviors.
+- Supports touch, keyboard, and mouse controls.
+
+---
+
+## 💻 Requirements
+
+- Android Studio (version X.X or higher)
+- JDK 8 or higher
+
+---
+
+## 📋 How to Run
+
+1. Clone the repository.
+2. Open the project in Android Studio.
+3. Run on an Android device or emulator.
