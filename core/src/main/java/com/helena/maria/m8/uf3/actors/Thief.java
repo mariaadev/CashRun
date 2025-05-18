@@ -31,6 +31,8 @@ public class Thief extends Actor {
 
     private TextureRegion thiefPause;
 
+    private float speed = 1.2f; // coincide con el SPEED de InputHandler
+
     public Thief(float x, float y, int width, int height){
         this.width = width;
         this.height = height;
@@ -45,12 +47,18 @@ public class Thief extends Actor {
         setTouchable(Touchable.enabled);
     }
 
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+    public float getSpeed() {
+        return speed;
+    }
 
     public float getWidth(){ return width; }
     public float getHeight(){ return  height; }
 
     public Rectangle getCollisionRect(){
-        float insetX = width * 0.5f; /*reducir un 20% el rectangulo para que no sea tan grande*/
+        float insetX = width * 0.5f; // reducir un 20% el rectángulo para que no sea tan grande
         float insetY = height * 0.5f;
         collisionRect.set(getX() + insetX, getY() + insetY,
             width - 2 * insetX, height - 2 * insetY);
@@ -58,63 +66,54 @@ public class Thief extends Actor {
         return collisionRect;
     }
 
-
     @Override
     public void draw(Batch batch, float parentAlpha){
         super.draw(batch, parentAlpha);
         batch.draw(getCurrentFrame(Gdx.graphics.getDeltaTime()), getX(), getY(), getWidth(),getHeight());
     }
 
+    /**
+     * dx y dy deben ser valores como -1, 0, 1 (o fracciones).
+     * La velocidad real aplicada será dx*speed, dy*speed.
+     */
     public void move(float dx, float dy){
-        Gdx.app.log("THIEF_MOVE", "dx=" + dx + ", dy=" + dy);
-        velocity.set(dx, dy);
+        Gdx.app.log("THIEF_MOVE", "dx=" + dx + ", dy=" + dy + " (speed=" + speed + ")");
+        velocity.set(dx * speed, dy * speed);
         isPaused = dx == 0 && dy == 0;
 
         if(dx > 0) direction = THIEF_RIGHT;
         else if(dx < 0) direction = THIEF_LEFT;
-
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
 
-        float dx = 0;
-        float dy = 0;
+        // Movimiento continuo por teclado si alguna tecla está pulsada
+        float dx = 0, dy = 0;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-            dx = -2;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-            dx = 2;
-        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) dx = -1;
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) dx = 1;
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) dy = 1;
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) dy = -1;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-            dy = 2;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-            dy = -2;
-        }
-
+        // Si hay input de teclado, ignora la velocidad puesta por touch/drag
         if (dx != 0 || dy != 0) {
+            velocity.set(dx * speed, dy * speed);
             isPaused = false;
-            velocity.set(dx, dy);
-
             if (dx > 0) direction = THIEF_RIGHT;
             else if (dx < 0) direction = THIEF_LEFT;
-
-            float newX = getX() + velocity.x;
-            float newY = getY() + velocity.y;
-
-            newX = Math.max(0, Math.min(newX, Settings.GAME_WIDTH - getWidth()));
-            newY = Math.max(0, Math.min(newY, Settings.GAME_HEIGHT - getHeight()));
-
-            setPosition(newX, newY);
-        } else {
-            isPaused = true;
         }
 
+        float newX = getX() + velocity.x;
+        float newY = getY() + velocity.y;
+
+        newX = Math.max(0, Math.min(newX, Settings.GAME_WIDTH - getWidth()));
+        newY = Math.max(0, Math.min(newY, Settings.GAME_HEIGHT - getHeight()));
+
+        setPosition(newX, newY);
         collisionRect.set(getX(), getY(), getWidth(), getHeight());
     }
-
 
     public TextureRegion getCurrentFrame(float delta){
         stateTime += delta;
@@ -126,12 +125,9 @@ public class Thief extends Actor {
         return direction == THIEF_RIGHT
             ? thiefAnimationRight.getKeyFrame(stateTime, true)
             : thiefAnimationLeft.getKeyFrame(stateTime, true);
-
-
     }
 
     public Rectangle getBounds() {
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
-
 }

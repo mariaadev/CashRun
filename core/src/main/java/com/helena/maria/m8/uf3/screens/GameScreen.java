@@ -127,10 +127,12 @@ public class GameScreen implements Screen {
         setupInput();
     }
     private void setupInput() {
+        Gdx.app.log("M8INPUT", "setupInput llamado");
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(new InputHandler(this));
         multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
+        Gdx.app.log("M8INPUT", "setInputProcessor hecho");
     }
 
     @Override
