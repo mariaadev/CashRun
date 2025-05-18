@@ -37,7 +37,7 @@ public class Police extends Actor {
 
     /** Calcula nova velocitat cap a l’objectiu */
     private void updateVelocity() {
-        velocity.set(target).sub(position).nor().scl(1.5f);
+        velocity.set(target).sub(position).nor().scl(0.7f);
         direction = velocity.x > 0 ? DIRECTION_RIGHT : DIRECTION_LEFT;
     }
 

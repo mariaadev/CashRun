@@ -52,6 +52,8 @@ public class GameScreen implements Screen {
     private GameState gameState = GameState.RUNNING;
 
     public GameScreen(Game game){
+        AssetManager.gameOver.stop();
+        AssetManager.winner.stop();
         AssetManager.music.play();
 
         this.game = game;
@@ -164,7 +166,6 @@ public class GameScreen implements Screen {
                 if (actor instanceof Police) {
                     Police police = (Police) actor;
                     if (police.collides(thief)) {
-                        AssetManager.gameOver.play();
                         thief.remove();
                         gameState = GameState.GAME_OVER;
                         game.setScreen(new FinalScreen(game, gameState, this));
@@ -187,8 +188,7 @@ public class GameScreen implements Screen {
             }
 
             /*** Comprovació de victoria: arriba a la meta amb mínim 1 bloc de diners ***/
-            if (moneyCollected > 0 && thief.getX() >= Settings.GAME_WIDTH - thief.getWidth()) {
-                AssetManager.winner.play();
+            if (moneyCollected == 19300 && thief.getX() >= Settings.GAME_WIDTH - thief.getWidth()) {
                 gameState = GameState.WINNER;
                 game.setScreen(new FinalScreen(game, gameState, this));
                 return;

@@ -43,7 +43,6 @@ public class FinalScreen implements Screen {
         pixmap.fill();
         backgroundOverlay = new Texture(pixmap);
         pixmap.dispose();
-
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/pixelifySans.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 70;
@@ -100,7 +99,7 @@ public class FinalScreen implements Screen {
         if (gameState == GameState.GAME_OVER) {
             batch.draw(AssetManager.policeRight[1], policeX, policeY, policeSize, policeSize);
             batch.draw(AssetManager.thief, thiefX, thiefY, thiefSize, thiefSize);
-
+            AssetManager.gameOver.play();
             batch.draw(AssetManager.titleGameover,
                 centerX - AssetManager.titleGameover.getWidth() * titleSize / 2,
                 centerY - AssetManager.titleGameover.getHeight() * titleSize / 2,
@@ -109,6 +108,7 @@ public class FinalScreen implements Screen {
 
         } else if (gameState == GameState.WINNER) {
             float spacing = 0f;
+            AssetManager.winner.play();
             float totalWidth = iconSize * 5 + spacing * 4;
             float startX = centerX - totalWidth / 2f;
             batch.draw(AssetManager.coins, startX, iconY, moneySize, moneySize);
