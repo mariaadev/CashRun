@@ -1,6 +1,7 @@
 package com.helena.maria.m8.uf3.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -61,7 +62,17 @@ public class SplashScreen implements Screen {
                 game.setScreen(new GameScreen(game));
                 return true;
             }
+
+            @Override
+            public boolean keyDown(int keycode) {
+                if (keycode == Input.Keys.ENTER) {
+                    game.setScreen(new GameScreen(game));
+                    return true;
+                }
+                return false;
+            }
         });
+
     }
 
     @Override
